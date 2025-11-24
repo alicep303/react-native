@@ -1,0 +1,90 @@
+import { useState } from "react";
+import { Platform, StyleSheet,Text, TextInput, TouchableOpacity } from "react-native";
+import {SafeAreaView} from "react-native-safe-area-context";
+
+interface SkillFormat {
+    id:number
+    name:string
+}
+
+export function Home() {
+
+    const [newSkill,setNewSkill] = useState('')
+    const [mySkills ,setMySkills] = useState<SkillFormat[]>([])
+
+    function handleAddNewSkill(){
+        const data = {
+            id:new Date().getTime(),
+            name: newSkill
+        }
+
+        // ['programa', 'react native', 'proximo item']
+        // setMySkills(oldState => [...oldState, data])
+        setMySkills([...mySkills, data])
+    }
+
+    return(
+    <SafeAreaView style={styles.conteiner}>
+      <Text style={styles.title}>Welcome, Alice
+
+      </Text>
+
+
+      <TextInput style={styles.input}
+      placeholder="write your skill"
+      placeholderTextColor='#555'
+      onChangeText={setNewSkill}//{() => newSkill = newSkill + text}
+      />
+
+
+    <Button title="Adicionar" onPress={handleAddNewSkill} activeOpacity={0.1}/>
+    
+{/* 
+        {
+            mySkills.map(skill =>(
+              <SkillCard key={skill.id} skill={skill.name} activeOpacity={1}/>
+            ))
+        } */}
+
+        <ScroolView>
+
+        { 
+        
+            mySkills.map(skill =>(
+              <SkillCard key={skill.id} skill={skill.name} activeOpacity={1}/>
+            ))
+        }
+
+        </ScroolView>
+    
+    {/* {<Text style={styles.textFooter}>{newSkill}</Text>} */}
+    </SafeAreaView>
+    )
+}
+
+
+export const styles = StyleSheet.create({
+    container:{
+      flex: 1,
+      backgroundColor: '#121015',
+      paddingHorizontal:20,
+      paddingVertical:50
+    },
+    title:{
+        color: '#fff',
+        fontSize: 24,
+        fontWeight: 'bold'
+    },
+    input:{
+        backgroundColor: '#1f1e25',
+        color: '#fff'
+        fontSize:18,
+        padding:Platform.OS === 'ios'? 15:10,
+        marginTop : 20,
+        borderRadius: 7 
+    },
+    textFooter:{
+        justifyContent: "flex-end",
+        color:'#fff'
+    }
+})
