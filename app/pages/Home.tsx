@@ -1,9 +1,11 @@
-import { useState } from "react";
-import { Platform, StyleSheet,Text, TextInput, TouchableOpacity } from "react-native";
-import {SafeAreaView} from "react-native-safe-area-context";
+import { useEffect, useState } from "react";
+import { FlatList, Platform, StyleSheet,Text, TextInput} from "react-native";
+import{SafeAreaView} from "react-native-safe-area-context";
+import{Button} from "../components/Button";
+import {SkillCard} from "../components/SkillCard";
 
 interface SkillFormat {
-    id:number
+    id:string
     name:string
 }
 
@@ -12,9 +14,32 @@ export function Home() {
     const [newSkill,setNewSkill] = useState('')
     const [mySkills ,setMySkills] = useState<SkillFormat[]>([])
 
-    function handleAddNewSkill(){
+    const [greetings, setGreetings] = useState('')
+ 
+        //1 função 2 dependencia
+    // useEffect(() => {
+    //     console.log("useEffect, executado!")
+    // },[mySkills])
+
+    useEffect{() => {
+        //const currentHour = new Date().getHours()
+        const currrentHour = 22
+        // console.log(currentHour)
+
+        if (currentHour < 12){
+            setGreetings('Good morning!')
+        }
+        else  if (currentHour >= 12 && currentHour < 18){
+            setGreetings('Good efternoon!')
+        }
+        else{
+            setGreetings('Good night!')
+        }
+    },[]}
+
+ function handleAddNewSkill(){
         const data = {
-            id:new Date().getTime(),
+            id:string(new Date().getTime()),
             name: newSkill
         }
 
@@ -23,17 +48,30 @@ export function Home() {
         setMySkills([...mySkills, data])
     }
 
-    return(
-    <SafeAreaView style={styles.conteiner}>
+    function handleRemoveSkill(id: string){
+        setMySkills(oldState => oldState.filter(
+            skill =>skill.id !=== id
+        ))
+    }
+
+    return{
+    <SafeAreaView 
+    style={styles.container}>
       <Text style={styles.title}>Welcome, Alice
 
       </Text>
 
+      <Text style={styles.greatings}>
+      {greatings}
+      </Text>
 
-      <TextInput style={styles.input}
+
+      <TextInput
+       style={styles.input}
       placeholder="write your skill"
       placeholderTextColor='#555'
-      onChangeText={setNewSkill}//{() => newSkill = newSkill + text}
+    //   onChangeText={setNewSkill}//{() => newSkill = newSkill + text}
+   // onChangeText={handleInputChange} //onChangeText = {text => handleinputchange}
       />
 
 
@@ -46,16 +84,24 @@ export function Home() {
             ))
         } */}
 
-        <ScroolView>
+      {/*   <ScroolView>
 
         { 
         
             mySkills.map(skill =>(
               <SkillCard key={skill.id} skill={skill.name} activeOpacity={1}/>
             ))
-        }
+        } </ScroolView> */}
 
-        </ScroolView>
+        <FlatList
+         data={mySkills}keyExtractor={item => item.id} 
+         renderItem=({ item }) => (
+         <SkillCard key={skill.id} skill={skill.name}
+          onPress={() => handleRemoveSkill(item.id)} activeOpacity={1}/>
+        )}
+        />
+
+       
     
     {/* {<Text style={styles.textFooter}>{newSkill}</Text>} */}
     </SafeAreaView>
@@ -75,9 +121,12 @@ export const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: 'bold'
     },
+    greating:{
+        color: '#fff'
+    },
     input:{
         backgroundColor: '#1f1e25',
-        color: '#fff'
+        color: '#fff',
         fontSize:18,
         padding:Platform.OS === 'ios'? 15:10,
         marginTop : 20,
